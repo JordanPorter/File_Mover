@@ -183,10 +183,15 @@ public class Application extends JFrame	{
 	 public void moveFiles()
 	  {
 	    ArrayList <FileCopy> copyTasks = new ArrayList <FileCopy> ();
+	    ArrayList <File> originals = new ArrayList<String>();
+	    ArrayList <File> copies = new ArrayList<File>();
 	    for (File f : new File(this.sourceFolder.getText()).listFiles()) {
-	      if (f.getName().toLowerCase().contains(this.selectedFileType.getSelectedItem().toString())) {
-	        copyTasks.add(new FileCopy(new File(this.destinationFolder.getText() + "/" + f.getName()), f));
-	      }
+	    	if (f.getName().toLowerCase().contains(this.selectedFileType.getSelectedItem().toString())) {
+	    		File nf = new File(this.destinationFolder.getText() + "/" + f.getName());
+	    		copyTasks.add(new FileCopy(nf, f));
+	    		originals.add(f);
+	    		copies.add(nf);
+	    	}
 	    }
 	    this.infoScreen.append("There Are " + copyTasks.size() + " Files To Copy\n");
 	    for (FileCopy f : copyTasks) {
@@ -196,14 +201,10 @@ public class Application extends JFrame	{
 	    }
 	    int completed = 0;
 	    while(completed < copyTasks.size())	{
-		    for (FileCopy f : copyTasks)	{
-		    	if(f.getSourceFile().getTotalSpace() == f.getDestinationFile().getTotalSpace())	{
+		    for (File f : originals)	{
+		    	if(f.getTotalSpace() == copies.get(originals.getIndexOf(f)).getTotalSpace())	{
 		    		System.out.println("Completed");
 		    		completed++;
-		    		this.infoScreen.append("Finished Copying " + f.getSourceFile().getName() + ".\t|\n");
-		    		this.infoScreen.append("Total Time Taken: " + f.getTimeTaken() + "seconds.\t|\n");
-		    	}
-		    }
 	    }
 	    this.infoScreen.append("Copying Complete");
 	  }
